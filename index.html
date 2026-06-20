@@ -477,17 +477,29 @@ async function saveToFlow(type) {
   if (type === 'text') {
     jsCode = `const item = $input.item;
 const name = item.json.student_name || '';
-item.json.caption = ${JSON.stringify(caption)}.replace(/\${name}/g, name);
+
+// ── Set Text Message Fields ────────────────────────────
 item.json.message_type = 'text';
+
+item.json.message_content = ${JSON.stringify(caption)}.replace(/\${name}/g, name);
+
 item.json.media_url = null;
+item.json.caption = null;
+item.json.interactive = null;
+
 return item;`;
   } else {
     jsCode = `const item = $input.item;
 const name = item.json.student_name || '';
 const MEDIA_URL = ${JSON.stringify(media || null)};
-item.json.caption = ${JSON.stringify(caption)}.replace(/\${name}/g, name);
+
+// ── Set Media Message Fields ───────────────────────────
 item.json.message_type = '${type === 'media' ? 'video' : 'image'}';
 item.json.media_url = MEDIA_URL;
+item.json.caption = ${JSON.stringify(caption)}.replace(/\${name}/g, name);
+item.json.message_content = null;
+item.json.interactive = null;
+
 return item;`;
   }
 
